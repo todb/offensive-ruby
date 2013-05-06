@@ -41,7 +41,12 @@ class Netmask
 	end
 
 	def set_bits
-		@bits = integer(mask).to_s(2).scan("1").size
+		binary = "%032b" % integer(mask) # More accurate for sub-8-bit masks
+		if binary =~ /01/
+			raise ArgumentError, "Invalid netmask: #{@mask} (#{binary})"
+		else
+			@bits = binary.scan("1").size
+		end
 	end
 
 end
