@@ -5,12 +5,14 @@ require 'pg' # From RubyGems
 
 class PostgresClient < BruteClient
 
+	attr_accessor :db
+
 	def connect
 		@target.close rescue nil
-		puts "Trying template1/%s:%s@%s" % [@user, @pass, @host]
+		puts "Trying %s/%s:%s@%s" % [@db, @user, @pass, @host]
 		begin
 		@target = PG::Connection.open(
-			:dbname => 'template1',
+			:dbname => @db,
 			:host   => @host,
 			:user   => @user,
 			:password => @pass
