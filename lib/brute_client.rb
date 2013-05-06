@@ -28,7 +28,7 @@ class BruteClient
 		puts "Trying #{max} passwords..."
 		@passlist.each do |pw|
 			@pass = pw
-			puts "*** Success: #{@user}:#{@pass}" if connect
+			puts "*** Success: #{@user}@#{@host}:#{@pass}" if connect
 			tries += 1
 		end
 	end
