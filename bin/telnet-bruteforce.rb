@@ -11,7 +11,7 @@ unless ARGV[1]
 	exit 1
 end
 
-tc = TelnetClient.new(:timeout => 1)
-tc.host = host
-tc.user = user
-tc.bruteforce
+client = TelnetClient.new(:timeout => 1)
+client.host = host
+client.user = user
+client.bruteforce
