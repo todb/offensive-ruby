@@ -42,6 +42,8 @@ class KippoLog
 
 end
 
+require 'timeout'
+
 class Responder
 
 	def initialize(klog)
@@ -60,15 +62,26 @@ class Responder
 				puts "#{Time.now.utc} Got a bite!"
 				creds.each_pair do |userhost,passes|
 					user,host = userhost.split('@')
-					client = SshClient.new(
-						:user => user,
-						:host => host,
-						:passlist => passes
-					)
-					client.bruteforce
+					connect_back(user,host,passes)
 				end
 			end
-			sleep 10
+			$stdout.flush
+			sleep 60
+		end
+	end
+
+	def connect_back(user,host,passes)
+		begin
+			Timeout.timeout(10) do
+				client = SshClient.new(
+					:user => user,
+					:host => host,
+					:passlist => passes
+				)
+				client.bruteforce
+			end
+		rescue
+			puts "Timed out, probably not listening."
 		end
 	end
 
