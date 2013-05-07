@@ -25,7 +25,7 @@ class BruteClient
 	def bruteforce
 		tries = 0
 		max = @passlist.size
-		puts "Trying #{max} passwords..."
+		puts "Trying #{max} password#{max > 1 ? 's' : ''}..."
 		@passlist.each do |pw|
 			@pass = pw
 			puts "*** Success: #{@user}@#{@host}:#{@pass}" if connect
