@@ -21,7 +21,7 @@ start = Time.now
 # Actually run the scan
 
 p = PortScanner.new(@net, @port)
-p.mode = @thread ? :thread : nil
+p.threaded = @thread ? :thread : nil
 p.scan
 finish = Time.now
 puts "Time elapsed: %.02f seconds" % [finish - start]

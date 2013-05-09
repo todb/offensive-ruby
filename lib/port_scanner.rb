@@ -5,7 +5,7 @@ require 'timeout'
 
 class PortScanner
 
-	attr_accessor :net, :port, :mode
+	attr_accessor :net, :port, :range, :threaded
 
 	def initialize(net, port)
 		@net = net
@@ -17,8 +17,8 @@ class PortScanner
 	def scan
 		puts "Scanning port #{@port} on #{@net}.#{@range}:"
 		print "Mode: "
-		if @mode == :thread
-			puts "Thread"
+		if @threaded
+			puts "Threaded"
 			threaded_scan
 		else
 			puts "Serial"
@@ -32,7 +32,7 @@ class PortScanner
 		if socket
 			socket.close
 			if Thread.current == Thread.main
-				puts "#{addr}:#{@port} listening" if Thread.current == Thread.main
+				puts "#{addr}:#{@port} listening"
 			else
 				@listeners << addr
 			end
@@ -40,9 +40,7 @@ class PortScanner
 	end
 
 	def serial_scan
-		@range.each do |i|
-			connect(i)
-		end
+		@range.each { |i| connect(i) }
 	end
 
 	def threaded_scan
