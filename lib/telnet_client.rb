@@ -8,7 +8,7 @@ class TelnetClient < BruteClient
 	def connect
 		@target.close rescue nil
 		puts "Trying %s:%s@%s" % [@user, @pass, @host]
-		@target = Net::Telnet::new( "Host" => @host, "Timeout" => @timeout)
+		@target = Net::Telnet.new( "Host" => @host, "Timeout" => @timeout)
 		begin
 			@target.login(@user, @pass)
 			@good = true

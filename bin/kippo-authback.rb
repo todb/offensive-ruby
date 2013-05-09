@@ -27,6 +27,12 @@ class KippoLog
 		@fdata.seek @offset
 		lines = @fdata.read @fdata.size
 		return @creds unless lines
+		parse_lines(lines)
+		@offset = @fdata.size
+		return @creds
+	end
+
+  def parse_lines(lines)
 		lines.each_line do |line|
 			next unless line =~ /,([0-9.]+)\] login attempt \[(.*)\] failed/
 			host = $1
@@ -36,9 +42,7 @@ class KippoLog
 			@creds[fulluser] ||= []
 			@creds[fulluser] << pass
 		end
-		@offset = @fdata.size
-		return @creds
-	end
+  end
 
 end
 

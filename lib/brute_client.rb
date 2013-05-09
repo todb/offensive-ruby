@@ -10,7 +10,8 @@ class BruteClient
 		@pass = opts[:pass] || "testpass"
 		@host = opts[:host] || "localhost"
 		@timeout = opts[:timeout] || 3
-		@passlist = opts[:passlist] || %w{test password1 letmein! test123 qwerty monkey changeme}
+		# Use a more realistic set of top passwords http://xato.net/wp-content/xup/diff.png
+		@passlist = opts[:passlist] || %w{password 123456 qwerty test123 dragon pussy 696969 letmein baseball}
 		unless @passlist.kind_of? Array
 			raise ArgumentError, "Passlist needs to be an Array"
 		end
@@ -23,13 +24,11 @@ class BruteClient
 	end
 
 	def bruteforce
-		tries = 0
 		max = @passlist.size
 		puts "Trying #{max} password#{max > 1 ? 's' : ''}..."
 		@passlist.each do |pw|
 			@pass = pw
 			puts "*** Success: #{@user}@#{@host}:#{@pass}" if connect
-			tries += 1
 		end
 	end
 
