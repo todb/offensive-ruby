@@ -14,25 +14,7 @@ class PortScanner
 	attr_accessor :type
 
 	def connect(i)
-		if @type == :ack
-			ack(i)
-		else
-			full_connect(i)
-		end
-	end
-
-	def ack_scan
-		@type = :ack
-		listen_for_replies
-		scan
-		collect_results
-	end
-
-	def listen_for_replies
-		@cap = PacketFu::Capture.new(
-			:filter => "tcp and src port #{@port}",
-			:start => true
-		)
+		@type == :ack ? ack(i) : full_connect(i)
 	end
 
 	def ack(i)
@@ -45,12 +27,19 @@ class PortScanner
 
 	def create_ack_template
 		unless @ack_template
-			config ||= PacketFu::Utils.whoami?
+			config = PacketFu::Utils.whoami?
 			@ack_template = PacketFu::TCPPacket.new(:config => config)
 			@ack_template.tcp_dst = @port.to_i
 			@ack_template.tcp_flags.ack = 1
 		end
 		return @ack_template
+	end
+
+	def listen_for_replies
+		@cap = PacketFu::Capture.new(
+			:filter => "tcp and src port #{@port}",
+			:start => true
+		)
 	end
 
 	def collect_results
@@ -61,6 +50,13 @@ class PortScanner
 			@listeners << pkt.ip_saddr
 		end
 		list_listeners
+	end
+
+	def ack_scan
+		@type = :ack
+		listen_for_replies
+		scan
+		collect_results
 	end
 
 end
